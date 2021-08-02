@@ -1,3 +1,4 @@
+from os import urandom
 from string import ascii_lowercase
 from collections import Counter
 from itertools import *
@@ -35,6 +36,13 @@ def unpad(data, block_size=16):
     assert 0 < padding_length <= block_size
     assert data[-padding_length:] == bytes([padding_length]*padding_length)
     return data[:-padding_length]
+
+def cbc_encrypt(encrypt_block, iv, pt):
+    ct = b''
+    for block in blocks(pt):
+        iv = encrypt_block(xor(iv, block))
+        ct += iv
+    return ct
 
 def cbc_decrypt(decrypt_block, iv, ct):
     pt = b''
